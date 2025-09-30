@@ -1,0 +1,2 @@
+#python requirements for mkdocs deployment on cloudflare pages
+mkdocs-material

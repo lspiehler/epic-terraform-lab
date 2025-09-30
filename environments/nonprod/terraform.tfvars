@@ -1,0 +1,421 @@
+prefixes = {
+    rg = "prod-"
+    vnet = "prod-"
+    subnet = "prod-"
+    nsg = "prod-"
+    peering = ""
+    nic = "prod-"
+    vm = ""
+    ip = "prod-"
+    disk = "prod-"
+    vmss = "prod-"
+    public_ip = "prod-"
+    bastion = "prod-"
+    storage_account = "prod"
+    share = "prod-"
+    management_lock = "prod-"
+    extension = "prod-"
+    pep = "prod-"
+    vault = "prod-"
+    backup_pol = "prod-epicbh-"
+    lb = "prod-"
+}
+
+suffixes = {
+    rg = "-westus2-rg"
+    vnet = "-westus2-vnet"
+    subnet = "-westus2-snet"
+    nsg = "-westus2-nsg"
+    peering = "-peer"
+    nic = "-westus2-nic"
+    vm = ""
+    ip = "-westus2-ip"
+    disk = "-westus2-dsk"
+    vmss = "-westus2-vmss"
+    public_ip = "-westus2-pip"
+    bastion = "-westus2-bastion"
+    storage_account = "westus2sa"
+    share = "-westus2-share"
+    management_lock = "-westus2-lock"
+    extension = "-westus2-ext"
+    pep = "-westus2-pep"
+    vault = "-westus2-vault"
+    backup_pol = "-westus2-backup"
+    lb = "-westus2-lb"
+}
+
+location = "westus2"
+timezone = "Central Standard Time"
+subscription_id = "42a3c96e-9249-422e-acbd-ea75547850fe" #<-- Replace with your subscription ID
+
+default_tags = {
+    environment = "nonprod"
+    repo = "https://github.com/lspiehler/epic-terraform-lab.git"
+    application = "epic"
+}
+
+rgs = {
+    network = {}
+    external = {}
+    hsw = {}
+    sharedinfra = {}
+    internal = {}
+}
+
+nsgs = {
+    bastion = {
+        resource_group = "network"
+        rules = {
+            Bastion_Allow_Inbound_HTTPS_443_Internet = "100"
+            Bastion_Allow_Inbound_HTTPS_443_GatewayManager = "150"
+            Bastion_Allow_Inbound_HTTPS_443_AzureLoadBalancer = "200"
+            Bastion_Allow_Inbound_Data_Plane = "250"
+            Bastion_Allow_Outbound_SSH_RDP = "100"
+            Bastion_Allow_Outbound_Azure_Cloud = "150"
+            Bastion_Allow_Outbound_Data_Plane = "200"
+            Bastion_Allow_Outbound_GetSessionInformation = "250"
+        }
+    }
+    odb = {
+        resource_group = "network"
+        rules = {
+            SSH_Inbound = "100"
+            SSH_Inbound_Block = "110"
+            FTP_Inbound = "120"
+            Iris_Inbound_Tcp = "130"
+            Iris_Inbound_Udp = "140"
+            RedAlert_Inbound = "150"
+            ECF_Inbound = "160"
+            Data_Courier_Inbound = "170"
+            ODB_Mirror_Inbound = "180"
+            Epic_VPN_ECF_Inbound = "190"
+        }
+    }
+    cogito = {
+        resource_group = "network"
+        rules = {
+            HTTP_Inbound = "100"
+            HTTPS_Inbound = "110"
+            Kuiper_Inbound = "120"
+            ODB_Inbound = "130"
+            ODB_Mirror_Inbound = "140"
+            SQL_Inbound = "150"
+            RDP_Inbound = "160"
+            RDP_Inbound_Block = "170"
+            Epic_ICMP_Inbound = "180"
+        }
+    }
+    dmz = {
+        resource_group = "network"
+        rules = {
+            HTTP_Inbound = "100"
+            HTTPS_Inbound = "110"
+            Kuiper_Inbound = "120"
+            RDP_Inbound = "130"
+            RDP_Inbound_Block = "140"
+        }
+    }
+    hsw = {
+        resource_group = "network"
+        rules = {
+            HTTP_Inbound = "100"
+            HTTPS_Inbound = "110"
+            RDP_Inbound = "120"
+            Kuiper_Inbound = "130"
+            SMB_Inbound = "140"
+            RDP_Inbound_Block = "150"
+        }
+    }
+    wss = {
+        resource_group = "network"
+        rules = {
+            HTTP_Inbound = "100"
+            HTTPS_Inbound = "110"
+            RPC_Inbound = "120"
+            RDP_Inbound = "130"
+            SMB_Inbound = "140"
+            HL7_Inbound = "150"
+            Kuiper_Inbound = "160"
+            RDP_Inbound_Block = "170"
+            SQL_Inbound = "180"
+            Chronicles_Inbound = "190"
+            Epic_ICMP_Inbound = "200"
+        }
+    }
+    sharedinfra = {
+        resource_group = "network"
+        rules = {
+            HTTP_Inbound = "100"
+            HTTPS_Inbound = "110"
+            RDP_Inbound = "120"
+            SMB_Inbound = "130"
+            RDP_Inbound_Block = "140"
+            Epic_ICMP_Inbound = "150"
+        }
+    }
+}
+
+################################################
+###################NSG Rules####################
+################################################
+
+rules = {
+    Bastion_Allow_Inbound_HTTPS_443_Internet = {
+        destination_port_ranges = ["443"]
+    }
+    Bastion_Allow_Inbound_HTTPS_443_GatewayManager = {
+        destination_port_ranges = ["443"]
+        source_address_prefix = "GatewayManager"
+    }
+    Bastion_Allow_Inbound_HTTPS_443_AzureLoadBalancer = {
+        destination_port_ranges = ["443"]
+        source_address_prefix = "AzureLoadBalancer"
+    }
+    Bastion_Allow_Inbound_Data_Plane = {
+        destination_port_ranges = ["8080", "5701"]
+        source_address_prefix = "VirtualNetwork"
+        protocol = "*"
+        destination_address_prefixes = ["VirtualNetwork"]
+    }
+    Bastion_Allow_Outbound_SSH_RDP = {
+        destination_port_ranges = ["22", "3389"]
+        direction = "Outbound"
+        protocol = "*"
+        destination_address_prefixes = ["VirtualNetwork"]
+    }
+    Bastion_Allow_Outbound_Azure_Cloud = {
+        destination_port_ranges = ["443"]
+        direction = "Outbound"
+        destination_address_prefix = "AzureCloud"
+    }
+    Bastion_Allow_Outbound_Data_Plane = {
+        destination_port_ranges = ["8080", "5701"]
+        direction = "Outbound"
+        protocol = "*"
+        source_address_prefix = "VirtualNetwork"
+        destination_address_prefixes = ["VirtualNetwork"]
+    }
+    Bastion_Allow_Outbound_GetSessionInformation = {
+        destination_port_ranges = ["80"]
+        direction = "Outbound"
+        protocol = "*"
+        destination_address_prefixes = ["Internet"]
+    }
+    SSH_Inbound_Block = {
+        destination_port_ranges = ["22"]
+        access = "Deny"
+    }
+    RDP_Inbound_Block = {
+        destination_port_ranges = ["3389"]
+        access = "Deny"
+    }
+    SSH_Inbound = {
+        destination_port_ranges = ["22"]
+        source_address_prefixes = ["10.45.0.0/16", "10.40.39.0/24", "10.40.23.0/24", "10.40.40.0/24", "10.40.36.0/24", "10.40.20.0/24", "10.40.21.0/24", "10.41.20.0/24", "10.40.7.0/24", "199.204.56.21/32"]    
+        }
+    RDP_Inbound = {
+        destination_port_ranges = ["3389"]
+        source_address_prefixes = ["10.40.39.0/24", "199.204.56.21/32"]
+    }
+    RPC_Inbound = {
+        destination_port_ranges = ["135"]
+    }
+    FTP_Inbound = {
+        destination_port_ranges = ["2022"]
+        source_address_prefixes = ["10.45.0.0/16", "10.40.39.0/24", "10.40.23.0/24", "10.40.40.0/24", "10.40.36.0/24", "10.40.20.0/24", "10.40.21.0/24", "10.41.20.0/24", "10.40.7.0/24", "199.204.56.21/32"]
+    }
+    Iris_Inbound_Tcp = {
+        destination_port_ranges = ["4002"]
+    }
+    Iris_Inbound_Udp = {
+        protocol = "Udp"
+        destination_port_ranges = ["4002"]
+    }
+    RedAlert_Inbound = {
+        destination_port_ranges = ["10443"]
+    }
+    ECF_Inbound = {
+        destination_port_ranges = ["6010", "6011", "6012", "6013", "6014","6031","6033","6040"]
+    }
+    Data_Courier_Inbound = {
+        destination_port_ranges = ["4073"]
+    }
+    ODB_Mirror_Inbound = {
+        destination_port_ranges = ["4074"]
+    }
+    ODB_Inbound = {
+        destination_port_ranges = ["33446"]
+    }
+    HTTP_Inbound = {
+        destination_port_ranges = ["80"]
+    }
+    HTTPS_Inbound = {
+        destination_port_ranges = ["443"]
+    }
+    Kuiper_Inbound = {
+        destination_port_ranges = ["135","5985-5986"]
+        source_address_prefixes = ["10.40.40.0/24","10.40.24.0/24","10.45.148.10/32","10.45.124.10/32","10.45.147.49/32","10.45.122.49/32"]
+    }
+    ICA_Inbound = {
+        destination_port_ranges = ["2598"]
+    }
+    ICA_Audio_Inbound = {
+        destination_port_ranges = ["16500-16509"]
+    }
+    EDT_Inbound = {
+        destination_port_ranges = ["1494","2598"]
+    }
+    SMB_Inbound = {
+        destination_port_ranges = ["445"]
+    }
+    WEM_Inbound = {
+        destination_port_ranges = ["8286"]
+    }
+    SQL_Inbound = {
+        destination_port_ranges = ["1433"]
+    }
+    HL7_Inbound = {
+        destination_port_ranges = ["20078"]
+    }
+    Chronicles_Inbound = {
+        destination_port_ranges = ["33446-33456", "10000-10010"]
+        source_address_prefixes = ["10.40.37.21/32"]
+    }
+    Epic_VPN_ECF_Inbound = {
+        destination_port_ranges = ["6000-6039"]
+        source_address_prefixes = ["199.204.56.21/32"]
+    }
+    Epic_ICMP_Inbound = {
+        protocol = "Icmp"
+        source_address_prefixes = ["199.204.56.21/32"]
+        destination_port_range = "*"
+    }
+}
+
+networks = {
+    "external" = {
+        resource_group = "network"
+        peerings = ["hsw", "sharedinfra", "internal"]
+        address_space = ["10.40.32.0/22"]
+        dns_servers = ["10.40.2.6", "10.40.2.7"]
+        subnets = {
+            dmz = {
+                network_security_group = "dmz"
+                address_prefixes = ["10.40.32.0/24"]
+            }                
+        }
+    }
+    "internal" = {
+        resource_group = "network"
+        peerings = ["hsw", "sharedinfra", "external"]
+        address_space = ["10.40.36.0/22"]
+        dns_servers = ["10.40.2.6", "10.40.2.7"]
+        subnets = {
+            odb = {
+                network_security_group = "odb"
+                address_prefixes = ["10.40.36.0/24"]
+            }                
+            wss = {
+                network_security_group = "wss"
+                address_prefixes = ["10.40.37.0/24"]
+            }
+            cogito = {
+                network_security_group = "cogito"
+                address_prefixes = ["10.40.38.0/24"]
+            }
+            bastion = {
+                name = "AzureBastionSubnet"
+                network_security_group = "bastion"
+                address_prefixes = ["10.40.39.0/24"]
+            }
+        }
+    }
+    "sharedinfra" = {
+        resource_group = "network"
+        peerings = ["hsw", "external", "internal"]
+        address_space = ["10.40.40.0/22"]
+        dns_servers = ["10.40.2.6", "10.40.2.7"]
+        subnets = {
+            sharedinfra = {
+                network_security_group = "sharedinfra"
+                address_prefixes = ["10.40.40.0/24"]
+            }                
+        }
+    }
+    "hsw" = {
+        resource_group = "network"
+        peerings = ["internal", "sharedinfra", "external"]
+        address_space = ["10.40.44.0/22"]
+        dns_servers = ["10.40.2.6", "10.40.2.7"]
+        subnets = {
+            hsw = {
+                network_security_group = "hsw"
+                address_prefixes = ["10.40.44.0/24"]
+            }                
+        }
+    }
+}
+
+storage_accounts = {
+    "diag2" = {
+        resource_group = "sharedinfra"
+        public_network_access_enabled = true
+        shared_access_key_enabled = false
+    }   
+}
+
+vmss = {
+    hsw = {
+        resource_group = "hsw"
+        zones = ["1", "2"]
+    }
+}
+
+windows_vms = {
+    hsw = {
+        ##Hyperspace Web Servers##
+        names = [
+            "azwu2nhsw001",
+            "azwu2nhsw002",
+            "azwu2nhsw003",
+            "azwu2nhsw004",
+        ] 
+        size = "Standard_E4s_v5"
+        license_type = "Windows_Server"
+        virtual_machine_scale_set = "hsw"
+        resource_group = "hsw"
+        nics = {
+            primary = {
+                ip_configuration = [
+                    [{
+                        subnet = "hsw.hsw"
+                        //private_ip_address = "192.168.1.1"
+                    }]
+                ]
+            }
+        }
+        boot_diagnostics = {
+            storage_account = "diag2"
+        }
+        tags = {
+            application = "hsw"
+            backend_address_pool = "hsw"
+        }
+        extension = {
+            "enable-winrm2" = {
+                settings = <<SETTINGS
+                {
+                    "commandToExecute": "winrm quickconfig -quiet && netsh advfirewall firewall set rule group=\"Windows Remote Management\" new enable=Yes && netsh advfirewall firewall set rule name=\"Windows Remote Management (HTTP-In)\" profile=public new remoteip=localsubnet,10.40.40.0/24"
+                }
+                SETTINGS
+            }
+            "guest-config" = {
+                name = "AzurePolicyforWindows"
+                publisher = "Microsoft.GuestConfiguration"
+                type = "ConfigurationforWindows"
+                type_handler_version = "1.0"
+                auto_upgrade_minor_version = "true"
+            }
+        }
+    }
+}

@@ -1,0 +1,41 @@
+site_name: Sapphire Azure Terraform Documentation
+site_url: https://terraform-azure-docs.sapphirehealth.org
+repo_url: https://github.com/Sapphire-Health/sapphire-terraform-azure
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+theme:
+  name: material
+  features:
+    - content.code.copy
+    - content.action.edit
+    - content.action.view
+
+plugins:
+  - search
+  # - social
+  # - glightbox
+  # - with-pdf:
+  #     author: Lyas Spiehler
+  #     cover_subtitle: ""
+  #     copyright: Copyright © PKIaaS.io 2019-2024
+  #     toc_level: 3
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Block Storage:
+    - Overview: managed-disks/overview.md
+    - Nested Disk Variables: managed-disks/nested.md
+    - Reference External Disk Variables: managed-disks/external.md
+    - Reference Manually Created Disks: managed-disks/unmanaged.md
+  - Load Balancer: load-balancer.md
+  - NAT Gateway: nat-gateway.md
+  - Application Gateway: application-gateway.md
+  - FAQ: faq.md
+  # - 📄 Download PDF: pdf/document.pdf

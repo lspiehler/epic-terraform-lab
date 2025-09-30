@@ -1,0 +1,99 @@
+name: Terraform Plan
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select an environment'
+        required: true
+        type: choice
+        default: demo
+        options:
+          - demo
+          - nonprod
+          - prod
+          - prometheus
+          - tiny
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    name: Terraform Plan on ${{ github.event.inputs.environment }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v3
+
+      # Load secrets and env vars per environment
+      - name: Set secrets and config for demo
+        if: ${{ github.event.inputs.environment == 'demo' }}
+        run: |
+          echo "ARM_CLIENT_ID=${{ vars.DEMO_ARM_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=${{ vars.DEMO_ARM_TENANT_ID }}" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=${{ vars.DEMO_ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+          echo "STORAGE_ACCOUNT_NAME=${{ vars.DEMO_STORAGE_ACCOUNT_NAME }}" >> $GITHUB_ENV
+          echo "CONTAINER_NAME=${{ vars.DEMO_CONTAINER_NAME }}" >> $GITHUB_ENV
+          echo "RESOURCE_GROUP_NAME=${{ vars.DEMO_RESOURCE_GROUP_NAME }}" >> $GITHUB_ENV
+          echo "TF_VAR_default_password=${{ secrets.DEMO_DEFAULT_PASSWORD }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=${{ secrets.DEMO_ARM_CLIENT_SECRET }}" >> $GITHUB_ENV
+
+      - name: Set secrets and config for nonprod
+        if: ${{ github.event.inputs.environment == 'nonprod' }}
+        run: |
+          echo "ARM_CLIENT_ID=${{ vars.NONPROD_ARM_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=${{ vars.NONPROD_ARM_TENANT_ID }}" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=${{ vars.NONPROD_ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+          echo "STORAGE_ACCOUNT_NAME=${{ vars.NONPROD_STORAGE_ACCOUNT_NAME }}" >> $GITHUB_ENV
+          echo "CONTAINER_NAME=${{ vars.NONPROD_CONTAINER_NAME }}" >> $GITHUB_ENV
+          echo "RESOURCE_GROUP_NAME=${{ vars.NONPROD_RESOURCE_GROUP_NAME }}" >> $GITHUB_ENV
+          echo "TF_VAR_default_password=${{ secrets.NONPROD_DEFAULT_PASSWORD }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=${{ secrets.NONPROD_ARM_CLIENT_SECRET }}" >> $GITHUB_ENV
+
+      - name: Set secrets and config for prod
+        if: ${{ github.event.inputs.environment == 'prod' }}
+        run: |
+          echo "ARM_CLIENT_ID=${{ vars.PROD_ARM_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=${{ vars.PROD_ARM_TENANT_ID }}" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=${{ vars.PROD_ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+          echo "STORAGE_ACCOUNT_NAME=${{ vars.PROD_STORAGE_ACCOUNT_NAME }}" >> $GITHUB_ENV
+          echo "CONTAINER_NAME=${{ vars.PROD_CONTAINER_NAME }}" >> $GITHUB_ENV
+          echo "RESOURCE_GROUP_NAME=${{ vars.PROD_RESOURCE_GROUP_NAME }}" >> $GITHUB_ENV
+          echo "TF_VAR_default_password=${{ secrets.PROD_DEFAULT_PASSWORD }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=${{ secrets.PROD_ARM_CLIENT_SECRET }}" >> $GITHUB_ENV
+
+      - name: Set secrets and config for prometheus
+        if: ${{ github.event.inputs.environment == 'prometheus' }}
+        run: |
+          echo "ARM_CLIENT_ID=${{ vars.PROMETHEUS_ARM_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=${{ vars.PROMETHEUS_ARM_TENANT_ID }}" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=${{ vars.PROMETHEUS_ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+          echo "STORAGE_ACCOUNT_NAME=${{ vars.PROMETHEUS_STORAGE_ACCOUNT_NAME }}" >> $GITHUB_ENV
+          echo "CONTAINER_NAME=${{ vars.PROMETHEUS_CONTAINER_NAME }}" >> $GITHUB_ENV
+          echo "RESOURCE_GROUP_NAME=${{ vars.PROMETHEUS_RESOURCE_GROUP_NAME }}" >> $GITHUB_ENV
+          echo "TF_VAR_default_password=${{ secrets.PROMETHEUS_DEFAULT_PASSWORD }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=${{ secrets.PROMETHEUS_ARM_CLIENT_SECRET }}" >> $GITHUB_ENV
+
+      - name: Set secrets and config for tiny
+        if: ${{ github.event.inputs.environment == 'tiny' }}
+        run: |
+          echo "ARM_CLIENT_ID=${{ vars.TINY_ARM_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=${{ vars.TINY_ARM_TENANT_ID }}" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=${{ vars.TINY_ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+          echo "STORAGE_ACCOUNT_NAME=${{ vars.TINY_STORAGE_ACCOUNT_NAME }}" >> $GITHUB_ENV
+          echo "CONTAINER_NAME=${{ vars.TINY_CONTAINER_NAME }}" >> $GITHUB_ENV
+          echo "RESOURCE_GROUP_NAME=${{ vars.TINY_RESOURCE_GROUP_NAME }}" >> $GITHUB_ENV
+          echo "TF_VAR_default_password=${{ secrets.TINY_DEFAULT_PASSWORD }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=${{ secrets.TINY_ARM_CLIENT_SECRET }}" >> $GITHUB_ENV
+
+      - name: Install Terraform
+        run: |
+          wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          sudo apt update && sudo apt install terraform
+
+      - name: Terraform Init
+        run: terraform -chdir=src init -backend-config=storage_account_name=$STORAGE_ACCOUNT_NAME -backend-config=container_name=$CONTAINER_NAME -backend-config=key=${{ github.event.inputs.environment }} -backend-config=resource_group_name=$RESOURCE_GROUP_NAME -backend-config=subscription_id=$ARM_SUBSCRIPTION_ID -backend-config=tenant_id=$ARM_TENANT_ID
+      
+      - name: Terraform Plan
+        run: terraform -chdir=src plan -var-file="../environments/${{ github.event.inputs.environment }}/terraform.tfvars"

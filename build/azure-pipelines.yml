@@ -1,0 +1,133 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+
+variables:
+  backendAzureRmResourceGroupName: 'TerraformDevOps'
+  backendAzureRmStorageAccountName: 'sapphiretfstate'
+  backendAzureRmContainerName: 'tfstate'
+  backendAzureRmKey: 'demo'
+  backendServiceArm: 'Sapphire Health 12k Subscription'
+  subDirectory: 'src'
+
+pool:
+  vmImage: ubuntu-latest
+  
+stages:
+  - stage: tfvalidate
+    jobs:
+      - job: validate
+        continueOnError: false
+        steps:
+        - task: TerraformInstaller@1
+          displayName: 'Terraform: Install'
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTaskV4@4
+          displayName: 'Terraform: Init'
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            backendServiceArm: '$(backendServiceArm)'
+            backendAzureRmResourceGroupName: '$(backendAzureRmResourceGroupName)'
+            backendAzureRmStorageAccountName: '$(backendAzureRmStorageAccountName)'
+            backendAzureRmContainerName: '$(backendAzureRmContainerName)'
+            backendAzureRmKey: '$(backendAzureRmKey)'
+            workingDirectory: $(System.DefaultWorkingDirectory)/$(subDirectory)
+        - task: TerraformTaskV4@4
+          displayName: 'Terraform: Validate'
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: $(System.DefaultWorkingDirectory)/$(subDirectory)
+        # - bash: |
+        #     python3 -VV
+        #     python3 -m site
+        #     python3 -m pip install --upgrade pyhcl            
+        #   displayName: "Install python dependencies for test"
+        # - bash: |
+        #     python3 tests/validate-vars.py --tfvars $(System.DefaultWorkingDirectory)/environments/$(environment)/terraform.tfvars
+        #   displayName: "Run python test to validate terraform.tfvars"
+        #   workingDirectory: $(System.DefaultWorkingDirectory)
+        - task: TerraformTaskV4@4
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            commandOptions: '-var-file="../environments/$(environment)/terraform.tfvars" -input=false'
+            environmentServiceNameAzureRM: '$(backendServiceArm)'
+            workingDirectory: $(System.DefaultWorkingDirectory)/$(subDirectory)
+          env:
+            TF_VAR_windows_password: $(windows_password)
+  # - stage: tfscan
+  #   condition: succeeded('tfvalidate')
+  #   dependsOn: tfvalidate
+  #   jobs:
+  #     - job: "runCheckov"
+  #       displayName: "Checkov > Pull, run and publish results of Checkov scan"
+  #       steps:
+  #         - bash: |
+  #             docker run \
+  #               --volume $(System.DefaultWorkingDirectory):/tf bridgecrew/checkov \
+  #               --directory /tf/$(subDirectory) \
+  #               --var-file ../environments/$(environment)/terraform.tfvars \
+  #               --output junitxml \
+  #               --soft-fail > $(System.DefaultWorkingDirectory)/CheckovReport.xml              
+  #           workingDirectory: $(System.DefaultWorkingDirectory)
+  #           displayName: "Run > checkov"
+  #         - task: PublishTestResults@2
+  #           inputs:
+  #             testRunTitle: "Checkov Results"
+  #             failTaskOnFailedTests: true
+  #             testResultsFormat: "JUnit"
+  #             testResultsFiles: "CheckovReport.xml"
+  #             searchFolder: "$(System.DefaultWorkingDirectory)"
+  #           displayName: "Publish > Checkov scan results"
+  - stage: tfdeploy
+    condition: succeeded('tfvalidate')
+    dependsOn: tfvalidate
+    jobs:
+      - job: apply  
+        steps:
+        - task: TerraformInstaller@1
+          displayName: 'Terraform: Install'
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTaskV4@4
+          displayName: 'Terraform: Init'
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            backendServiceArm: '$(backendServiceArm)'
+            backendAzureRmResourceGroupName: '$(backendAzureRmResourceGroupName)'
+            backendAzureRmStorageAccountName: '$(backendAzureRmStorageAccountName)'
+            backendAzureRmContainerName: '$(backendAzureRmContainerName)'
+            backendAzureRmKey: '$(backendAzureRmKey)'
+            workingDirectory: $(System.DefaultWorkingDirectory)/$(subDirectory)
+        - task: TerraformTaskV4@4
+          displayName: 'Terraform: Validate'
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: $(System.DefaultWorkingDirectory)/$(subDirectory)
+        - task: TerraformTaskV4@4
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            commandOptions: '-var-file="../environments/$(environment)/terraform.tfvars" -input=false'
+            environmentServiceNameAzureRM: '$(backendServiceArm)'
+            workingDirectory: $(System.DefaultWorkingDirectory)/$(subDirectory)
+          env:
+            TF_VAR_windows_password: $(windows_password)
+        - task: TerraformTaskV4@4
+          displayName: 'Terraform: Apply'
+          inputs:
+            provider: 'azurerm'
+            command: 'apply'
+            commandOptions: '-var-file="../environments/$(environment)/terraform.tfvars" -input=false'
+            environmentServiceNameAzureRM: '$(backendServiceArm)'
+            workingDirectory: $(System.DefaultWorkingDirectory)/$(subDirectory)
+          env:
+            TF_VAR_windows_password: $(windows_password)

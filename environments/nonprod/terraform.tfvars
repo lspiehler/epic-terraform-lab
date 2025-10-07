@@ -375,8 +375,8 @@ windows_vms = {
     hsw = {
         ##Hyperspace Web Servers##
         names = [
-            "azwu2nhsw001",
-            "azwu2nhsw002"
+            "azwu2nhsw001"
+            # "azwu2nhsw002"
         ] 
         size = "Standard_D2s_v3"
         license_type = "Windows_Server"
@@ -414,6 +414,18 @@ windows_vms = {
                 type = "ConfigurationforWindows"
                 type_handler_version = "1.0"
                 auto_upgrade_minor_version = "true"
+            }
+        }
+        disks = {
+            disk1 = {
+                lun = "0"
+                storage_account_type = "Premium_LRS"
+                disk_size_gb = "64"
+            }
+            disk2 = {
+                lun = "1"
+                storage_account_type = "Premium_LRS"
+                disk_size_gb = "64"
             }
         }
     }

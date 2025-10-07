@@ -1,4 +1,4 @@
-prefixes = {
+name_prefixes = {
     rg = "prod-"
     vnet = "prod-"
     subnet = "prod-"
@@ -21,7 +21,7 @@ prefixes = {
     lb = "prod-"
 }
 
-suffixes = {
+name_suffixes = {
     rg = "-westus2-rg"
     vnet = "-westus2-vnet"
     subnet = "-westus2-snet"
@@ -357,7 +357,7 @@ networks = {
 }
 
 storage_accounts = {
-    "diag2" = {
+    "diag2lyas" = {
         resource_group = "sharedinfra"
         public_network_access_enabled = true
         shared_access_key_enabled = false
@@ -367,7 +367,7 @@ storage_accounts = {
 vmss = {
     hsw = {
         resource_group = "hsw"
-        zones = ["1", "2"]
+        zones = ["1"]
     }
 }
 
@@ -376,13 +376,12 @@ windows_vms = {
         ##Hyperspace Web Servers##
         names = [
             "azwu2nhsw001",
-            "azwu2nhsw002",
-            "azwu2nhsw003",
-            "azwu2nhsw004",
+            "azwu2nhsw002"
         ] 
-        size = "Standard_E4s_v5"
+        size = "Standard_D2s_v3"
         license_type = "Windows_Server"
-        virtual_machine_scale_set = "hsw"
+        # virtual_machine_scale_set = "hsw"
+        zone = "2"
         resource_group = "hsw"
         nics = {
             primary = {
@@ -395,7 +394,7 @@ windows_vms = {
             }
         }
         boot_diagnostics = {
-            storage_account = "diag2"
+            storage_account = "diag2lyas"
         }
         tags = {
             application = "hsw"
@@ -416,6 +415,25 @@ windows_vms = {
                 type_handler_version = "1.0"
                 auto_upgrade_minor_version = "true"
             }
+        }
+    }
+}
+
+public_ips = {
+    bastion = {
+        resource_group = "internal"
+        allocation_method = "Static"
+        sku = "Standard"
+    }
+}
+
+bastion_host = {
+    bastion = {
+        resource_group = "internal"
+        sku = "Standard"
+        ip_configuration = {
+            subnet = "internal.bastion"
+            public_ip_address = "bastion"
         }
     }
 }

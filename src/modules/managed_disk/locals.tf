@@ -35,7 +35,7 @@ locals {
       for vm_key, vm in vms : [
         for vm_count, vm_index in length(vm.names) > 0 ? vm.names : range(vm.count) : [
           for disk_key, disk in vm.disks : {
-            test = disk.external_disk != null && vm.count > 1 || length(vm.names) > 1 ? file("Error: external storage reference for VM configuration \"${vm_key}\" is not support for more than 1 VM.") : "OK"
+            test = disk.external_disk != null && (vm.count > 1 || length(vm.names) > 1) ? file("Error: external storage reference for VM configuration \"${vm_key}\" is not support for more than 1 VM.") : "OK"
           }
         ]
       ]

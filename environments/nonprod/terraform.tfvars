@@ -424,10 +424,24 @@ windows_vms = {
             }
             disk2 = {
                 lun = "1"
-                storage_account_type = "Premium_LRS"
-                disk_size_gb = "64"
+                external_disk = "test_disk_2"
             }
         }
+    }
+}
+
+managed_disks = {
+    test_disk_1 = {
+        resource_group = "sharedinfra"
+        zone = "2"
+        storage_account_type = "Premium_LRS"
+        disk_size_gb = "64"
+    }
+    test_disk_2 = {
+        resource_group = "sharedinfra"
+        zone = "2"
+        storage_account_type = "Premium_LRS"
+        disk_size_gb = "64"
     }
 }
 

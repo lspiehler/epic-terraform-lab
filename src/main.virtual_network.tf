@@ -47,6 +47,7 @@ module "network_security_group_association" {
   networks = var.networks
   subnet = module.subnet.subnet
   nsg = module.network_security_group.network_security_group
+  mod_network_security_rule = module.network_security_rule.network_security_rule
 }
 
 ##Create the rules for each NSG. Each NSG has rules defined by the rules attribute within the variable NSGs

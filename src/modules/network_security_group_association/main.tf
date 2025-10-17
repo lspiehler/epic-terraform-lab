@@ -4,4 +4,6 @@ resource "azurerm_subnet_network_security_group_association" "network_security_g
   }
   subnet_id = each.value.subnet_id
   network_security_group_id = each.value.network_security_group_id
+
+  depends_on = [ var.mod_network_security_rule ]
 }

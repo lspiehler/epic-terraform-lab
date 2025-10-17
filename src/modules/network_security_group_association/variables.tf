@@ -9,3 +9,7 @@ variable "subnet" {
 variable "nsg" {
     type = any
 }
+
+variable "mod_network_security_rule" {
+    type = any
+}

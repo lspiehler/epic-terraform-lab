@@ -416,32 +416,49 @@ windows_vms = {
                 auto_upgrade_minor_version = "true"
             }
         }
-        disks = {
-            disk1 = {
-                lun = "0"
-                storage_account_type = "Premium_LRS"
-                disk_size_gb = "64"
-            }
-            disk2 = {
-                lun = "1"
-                external_disk = "test_disk_2"
-            }
-        }
+        # disks = {
+        #     disk1 = {
+        #         lun = "0"
+        #         storage_account_type = "Premium_LRS"
+        #         disk_size_gb = "64"
+        #     }
+        # }
+        # disks = {
+        #     disk1 = {
+        #         lun = "0"
+        #         storage_account_type = "Premium_LRS"
+        #         disk_size_gb = "64"
+        #     }
+        #     disk2 = {
+        #         lun = "1"
+        #         external_disk = "test_disk_2"
+        #     }
+        # }
     }
 }
 
 managed_disks = {
-    test_disk_1 = {
-        resource_group = "sharedinfra"
+#     test_disk_1 = {
+#         resource_group = "sharedinfra"
+#         zone = "2"
+#         storage_account_type = "Premium_LRS"
+#         disk_size_gb = "64"
+#     }
+#     test_disk_2 = {
+#         resource_group = "sharedinfra"
+#         zone = "2"
+#         storage_account_type = "Premium_LRS"
+#         disk_size_gb = "64"
+#     }
+    "azwu2nhsw001.disk1" = {
+        name = "prod-disk1-azwu2nhsw001-westus2-dsk"
+        resource_group = "hsw"
         zone = "2"
         storage_account_type = "Premium_LRS"
         disk_size_gb = "64"
-    }
-    test_disk_2 = {
-        resource_group = "sharedinfra"
-        zone = "2"
-        storage_account_type = "Premium_LRS"
-        disk_size_gb = "64"
+        tags = {
+            disk_label = "disk1"
+        }
     }
 }
 

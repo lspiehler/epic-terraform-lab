@@ -462,21 +462,21 @@ managed_disks = {
     }
 }
 
-public_ips = {
-    bastion = {
-        resource_group = "internal"
-        allocation_method = "Static"
-        sku = "Standard"
-    }
-}
+# public_ips = {
+#     bastion = {
+#         resource_group = "internal"
+#         allocation_method = "Static"
+#         sku = "Standard"
+#     }
+# }
 
-bastion_host = {
-    bastion = {
-        resource_group = "internal"
-        sku = "Standard"
-        ip_configuration = {
-            subnet = "internal.bastion"
-            public_ip_address = "bastion"
-        }
-    }
-}
+# bastion_host = {
+#     bastion = {
+#         resource_group = "internal"
+#         sku = "Standard"
+#         ip_configuration = {
+#             subnet = "internal.bastion"
+#             public_ip_address = "bastion"
+#         }
+#     }
+# }

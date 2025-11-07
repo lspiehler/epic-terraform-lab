@@ -14,7 +14,7 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    name: Terraform Plan on ${{ github.event.inputs.environment }}
+    name: Terraform Apply on ${{ github.event.inputs.environment }}
     defaults:
       run:
         shell: bash

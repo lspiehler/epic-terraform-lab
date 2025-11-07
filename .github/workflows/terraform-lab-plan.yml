@@ -34,7 +34,7 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       
       - name: Terraform Plan
-        run: terraform -chdir=src plan -var-file="../environments/${{ github.event.inputs.environment }}/terraform.tfvars"
+        run: terraform -chdir=src plan -var-file="../environments/${{ github.event.inputs.environment }}/terraform.tfvars" 
         env:
           ARM_CLIENT_ID: ${{ vars.ARM_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}

@@ -326,6 +326,9 @@ linux_vms = {
         boot_diagnostics = {
             storage_account = "diag2lyas"
         }
+        identity = {
+            type = "SystemAssigned"
+        }
     }
 }
 

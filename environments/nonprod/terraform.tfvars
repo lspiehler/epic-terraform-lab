@@ -19,6 +19,7 @@ name_prefixes = {
     vault = "prod-"
     backup_pol = "prod-epicbh-"
     lb = "prod-"
+    nat_gateway = "prod-"
 }
 
 name_suffixes = {
@@ -42,6 +43,7 @@ name_suffixes = {
     vault = "-westus2-vault"
     backup_pol = "-westus2-backup"
     lb = "-westus2-lb"
+    nat_gateway = "-westus2-natgw"
 }
 
 location = "westus2"
@@ -55,16 +57,16 @@ default_tags = {
 }
 
 rgs = {
-    network = {}
-    external = {}
+    # network = {}
+    # external = {}
     hsw = {}
-    sharedinfra = {}
-    internal = {}
+    # sharedinfra = {}
+    # internal = {}
 }
 
 nsgs = {
     bastion = {
-        resource_group = "network"
+        resource_group = "hsw"
         rules = {
             Bastion_Allow_Inbound_HTTPS_443_Internet = "100"
             Bastion_Allow_Inbound_HTTPS_443_GatewayManager = "150"
@@ -76,47 +78,47 @@ nsgs = {
             Bastion_Allow_Outbound_GetSessionInformation = "250"
         }
     }
-    odb = {
-        resource_group = "network"
-        rules = {
-            SSH_Inbound = "100"
-            SSH_Inbound_Block = "110"
-            FTP_Inbound = "120"
-            Iris_Inbound_Tcp = "130"
-            Iris_Inbound_Udp = "140"
-            RedAlert_Inbound = "150"
-            ECF_Inbound = "160"
-            Data_Courier_Inbound = "170"
-            ODB_Mirror_Inbound = "180"
-            Epic_VPN_ECF_Inbound = "190"
-        }
-    }
-    cogito = {
-        resource_group = "network"
-        rules = {
-            HTTP_Inbound = "100"
-            HTTPS_Inbound = "110"
-            Kuiper_Inbound = "120"
-            ODB_Inbound = "130"
-            ODB_Mirror_Inbound = "140"
-            SQL_Inbound = "150"
-            RDP_Inbound = "160"
-            RDP_Inbound_Block = "170"
-            Epic_ICMP_Inbound = "180"
-        }
-    }
-    dmz = {
-        resource_group = "network"
-        rules = {
-            HTTP_Inbound = "100"
-            HTTPS_Inbound = "110"
-            Kuiper_Inbound = "120"
-            RDP_Inbound = "130"
-            RDP_Inbound_Block = "140"
-        }
-    }
+    # odb = {
+    #     resource_group = "network"
+    #     rules = {
+    #         SSH_Inbound = "100"
+    #         SSH_Inbound_Block = "110"
+    #         FTP_Inbound = "120"
+    #         Iris_Inbound_Tcp = "130"
+    #         Iris_Inbound_Udp = "140"
+    #         RedAlert_Inbound = "150"
+    #         ECF_Inbound = "160"
+    #         Data_Courier_Inbound = "170"
+    #         ODB_Mirror_Inbound = "180"
+    #         Epic_VPN_ECF_Inbound = "190"
+    #     }
+    # }
+    # cogito = {
+    #     resource_group = "network"
+    #     rules = {
+    #         HTTP_Inbound = "100"
+    #         HTTPS_Inbound = "110"
+    #         Kuiper_Inbound = "120"
+    #         ODB_Inbound = "130"
+    #         ODB_Mirror_Inbound = "140"
+    #         SQL_Inbound = "150"
+    #         RDP_Inbound = "160"
+    #         RDP_Inbound_Block = "170"
+    #         Epic_ICMP_Inbound = "180"
+    #     }
+    # }
+    # dmz = {
+    #     resource_group = "network"
+    #     rules = {
+    #         HTTP_Inbound = "100"
+    #         HTTPS_Inbound = "110"
+    #         Kuiper_Inbound = "120"
+    #         RDP_Inbound = "130"
+    #         RDP_Inbound_Block = "140"
+    #     }
+    # }
     hsw = {
-        resource_group = "network"
+        resource_group = "hsw"
         rules = {
             HTTP_Inbound = "100"
             HTTPS_Inbound = "110"
@@ -126,33 +128,33 @@ nsgs = {
             RDP_Inbound_Block = "150"
         }
     }
-    wss = {
-        resource_group = "network"
-        rules = {
-            HTTP_Inbound = "100"
-            HTTPS_Inbound = "110"
-            RPC_Inbound = "120"
-            RDP_Inbound = "130"
-            SMB_Inbound = "140"
-            HL7_Inbound = "150"
-            Kuiper_Inbound = "160"
-            RDP_Inbound_Block = "170"
-            SQL_Inbound = "180"
-            Chronicles_Inbound = "190"
-            Epic_ICMP_Inbound = "200"
-        }
-    }
-    sharedinfra = {
-        resource_group = "network"
-        rules = {
-            HTTP_Inbound = "100"
-            HTTPS_Inbound = "110"
-            RDP_Inbound = "120"
-            SMB_Inbound = "130"
-            RDP_Inbound_Block = "140"
-            Epic_ICMP_Inbound = "150"
-        }
-    }
+    # wss = {
+    #     resource_group = "network"
+    #     rules = {
+    #         HTTP_Inbound = "100"
+    #         HTTPS_Inbound = "110"
+    #         RPC_Inbound = "120"
+    #         RDP_Inbound = "130"
+    #         SMB_Inbound = "140"
+    #         HL7_Inbound = "150"
+    #         Kuiper_Inbound = "160"
+    #         RDP_Inbound_Block = "170"
+    #         SQL_Inbound = "180"
+    #         Chronicles_Inbound = "190"
+    #         Epic_ICMP_Inbound = "200"
+    #     }
+    # }
+    # sharedinfra = {
+    #     resource_group = "network"
+    #     rules = {
+    #         HTTP_Inbound = "100"
+    #         HTTPS_Inbound = "110"
+    #         RDP_Inbound = "120"
+    #         SMB_Inbound = "130"
+    #         RDP_Inbound_Block = "140"
+    #         Epic_ICMP_Inbound = "150"
+    #     }
+    # }
 }
 
 ################################################
@@ -215,7 +217,7 @@ rules = {
         }
     RDP_Inbound = {
         destination_port_ranges = ["3389"]
-        source_address_prefixes = ["10.40.39.0/24", "199.204.56.21/32"]
+        source_address_prefixes = ["10.40.45.0/24"]
     }
     RPC_Inbound = {
         destination_port_ranges = ["135"]
@@ -293,72 +295,78 @@ rules = {
 }
 
 networks = {
-    "external" = {
-        resource_group = "network"
-        peerings = ["hsw", "sharedinfra", "internal"]
-        address_space = ["10.40.32.0/22"]
-        dns_servers = ["10.40.2.6", "10.40.2.7"]
-        subnets = {
-            dmz = {
-                network_security_group = "dmz"
-                address_prefixes = ["10.40.32.0/24"]
-            }                
-        }
-    }
-    "internal" = {
-        resource_group = "network"
-        peerings = ["hsw", "sharedinfra", "external"]
-        address_space = ["10.40.36.0/22"]
-        dns_servers = ["10.40.2.6", "10.40.2.7"]
-        subnets = {
-            odb = {
-                network_security_group = "odb"
-                address_prefixes = ["10.40.36.0/24"]
-            }                
-            wss = {
-                network_security_group = "wss"
-                address_prefixes = ["10.40.37.0/24"]
-            }
-            cogito = {
-                network_security_group = "cogito"
-                address_prefixes = ["10.40.38.0/24"]
-            }
-            bastion = {
-                name = "AzureBastionSubnet"
-                network_security_group = "bastion"
-                address_prefixes = ["10.40.39.0/24"]
-            }
-        }
-    }
-    "sharedinfra" = {
-        resource_group = "network"
-        peerings = ["hsw", "external", "internal"]
-        address_space = ["10.40.40.0/22"]
-        dns_servers = ["10.40.2.6", "10.40.2.7"]
-        subnets = {
-            sharedinfra = {
-                network_security_group = "sharedinfra"
-                address_prefixes = ["10.40.40.0/24"]
-            }                
-        }
-    }
+    # "external" = {
+    #     resource_group = "network"
+    #     peerings = ["hsw", "sharedinfra", "internal"]
+    #     address_space = ["10.40.32.0/22"]
+    #     dns_servers = ["10.40.2.6", "10.40.2.7"]
+    #     subnets = {
+    #         dmz = {
+    #             network_security_group = "dmz"
+    #             address_prefixes = ["10.40.32.0/24"]
+    #         }                
+    #     }
+    # }
+    # "internal" = {
+    #     resource_group = "network"
+    #     peerings = ["hsw"]
+    #     peerings = ["hsw", "sharedinfra", "external"]
+    #     dns_servers = ["10.40.2.6", "10.40.2.7"]
+    #     subnets = {
+    #         odb = {
+    #             network_security_group = "odb"
+    #             address_prefixes = ["10.40.36.0/24"]
+    #         }                
+    #         wss = {
+    #             network_security_group = "wss"
+    #             address_prefixes = ["10.40.37.0/24"]
+    #         }
+    #         cogito = {
+    #             network_security_group = "cogito"
+    #             address_prefixes = ["10.40.38.0/24"]
+    #         }
+    #         bastion = {
+    #             name = "AzureBastionSubnet"
+    #             network_security_group = "bastion"
+    #             address_prefixes = ["10.40.39.0/24"]
+    #         }
+    #     }
+    # }
+    # "sharedinfra" = {
+    #     resource_group = "network"
+    #     peerings = ["hsw", "external", "internal"]
+    #     address_space = ["10.40.40.0/22"]
+    #     dns_servers = ["10.40.2.6", "10.40.2.7"]
+    #     subnets = {
+    #         sharedinfra = {
+    #             network_security_group = "sharedinfra"
+    #             address_prefixes = ["10.40.40.0/24"]
+    #         }                
+    #     }
+    # }
     "hsw" = {
-        resource_group = "network"
-        peerings = ["internal", "sharedinfra", "external"]
+        resource_group = "hsw"
+        # peerings = ["internal", "sharedinfra", "external"]
         address_space = ["10.40.44.0/22"]
-        dns_servers = ["10.40.2.6", "10.40.2.7"]
+        # dns_servers = ["10.40.2.6", "10.40.2.7"]
         subnets = {
             hsw = {
                 network_security_group = "hsw"
                 address_prefixes = ["10.40.44.0/24"]
-            }                
+                nat_gateway = "hsw"
+            }
+            bastion = {
+                name = "AzureBastionSubnet"
+                network_security_group = "bastion"
+                address_prefixes = ["10.40.45.0/24"]
+            }
         }
     }
 }
 
 storage_accounts = {
     "diag2lyas" = {
-        resource_group = "sharedinfra"
+        resource_group = "hsw"
         public_network_access_enabled = true
         shared_access_key_enabled = false
     }   
@@ -378,7 +386,7 @@ windows_vms = {
             "azwu2nhsw001"
             # "azwu2nhsw002"
         ] 
-        size = "Standard_D2s_v3"
+        size = "Standard_D2as_v5"
         license_type = "Windows_Server"
         # virtual_machine_scale_set = "hsw"
         zone = "2"
@@ -400,22 +408,22 @@ windows_vms = {
             application = "hsw"
             backend_address_pool = "hsw"
         }
-        extension = {
-            "enable-winrm2" = {
-                settings = <<SETTINGS
-                {
-                    "commandToExecute": "winrm quickconfig -quiet && netsh advfirewall firewall set rule group=\"Windows Remote Management\" new enable=Yes && netsh advfirewall firewall set rule name=\"Windows Remote Management (HTTP-In)\" profile=public new remoteip=localsubnet,10.40.40.0/24"
-                }
-                SETTINGS
-            }
-            "guest-config" = {
-                name = "AzurePolicyforWindows"
-                publisher = "Microsoft.GuestConfiguration"
-                type = "ConfigurationforWindows"
-                type_handler_version = "1.0"
-                auto_upgrade_minor_version = "true"
-            }
-        }
+        # extension = {
+        #     "enable-winrm2" = {
+        #         settings = <<SETTINGS
+        #         {
+        #             "commandToExecute": "winrm quickconfig -quiet && netsh advfirewall firewall set rule group=\"Windows Remote Management\" new enable=Yes && netsh advfirewall firewall set rule name=\"Windows Remote Management (HTTP-In)\" profile=public new remoteip=localsubnet,10.40.40.0/24"
+        #         }
+        #         SETTINGS
+        #     }
+        #     "guest-config" = {
+        #         name = "AzurePolicyforWindows"
+        #         publisher = "Microsoft.GuestConfiguration"
+        #         type = "ConfigurationforWindows"
+        #         type_handler_version = "1.0"
+        #         auto_upgrade_minor_version = "true"
+        #     }
+        # }
         # disks = {
         #     disk1 = {
         #         lun = "0"
@@ -437,46 +445,100 @@ windows_vms = {
     }
 }
 
-managed_disks = {
-#     test_disk_1 = {
-#         resource_group = "sharedinfra"
-#         zone = "2"
-#         storage_account_type = "Premium_LRS"
-#         disk_size_gb = "64"
-#     }
-#     test_disk_2 = {
-#         resource_group = "sharedinfra"
-#         zone = "2"
-#         storage_account_type = "Premium_LRS"
-#         disk_size_gb = "64"
-#     }
-    "azwu2nhsw001.disk1" = {
-        name = "prod-disk1-azwu2nhsw001-westus2-dsk"
+linux_vms = {
+    ansible = {
+        size = "Standard_D2as_v5"
+        names = [
+            "ansible01"
+        ]
+        zone = 2
+        admin_ssh_key = {
+            public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCSRFZYxq5DuQrTGOPOyCyMvqC0bmMF13GUyy7+lfD21XOxcxSmKax8eX5Heuo301TCgDxM+DAG7sVFOhfrqGpsYI7LcFcVJwGZZPqsfM5TnVwxtDEbOGqNdOTtKnaoE7EuO59Ug7KptvZyMzhRiMLY6b96UOONQqNwvRYlohldZeCC2zeABqyRHSjHSITdT/7wWJJ7tASy8bS+ek5I8S72clcJ0xDliSwRvIs4TscaijnlkAvjvA1mYXm4psPKSCeeGkIdT2zo9DQbfyWgubylR49vWzqtDgvUANRWLvjZpdNk6fXIMDuGWF/G500EFquXUBOBXWY+qMVofRw+lzeN"
+        }
+        disable_password_authentication = false
         resource_group = "hsw"
-        zone = "2"
-        storage_account_type = "Premium_LRS"
-        disk_size_gb = "64"
-        tags = {
-            disk_label = "disk1"
+        nics = {
+            primary = {
+                # accelerated_networking_enabled = false
+                ip_configuration = [[{
+                    subnet = "hsw.hsw"
+                }]]
+            }
+        }
+        source_image_reference = {
+            publisher = "canonical"
+            offer = "ubuntu-24_04-lts"
+            sku = "server"
+            version = "latest"
+        }
+        boot_diagnostics = {
+            storage_account = "diag2lyas"
+        }
+        # extension = {
+        #     "guest-config" = {
+        #         name = "AzurePolicyforLinux"
+        #         publisher = "Microsoft.GuestConfiguration"
+        #         type = "ConfigurationforLinux"
+        #         type_handler_version = "1.0"
+        #         auto_upgrade_minor_version = "true"
+
+        #     }
+        # }
+    }
+}
+
+managed_disks = {
+    # test_disk_1 = {
+    #     resource_group = "sharedinfra"
+    #     zone = "2"
+    #     storage_account_type = "Premium_LRS"
+    #     disk_size_gb = "64"
+    # }
+    # test_disk_2 = {
+    #     resource_group = "sharedinfra"
+    #     zone = "2"
+    #     storage_account_type = "Premium_LRS"
+    #     disk_size_gb = "64"
+    # }
+    # "azwu2nhsw001.disk1" = {
+    #     name = "prod-disk1-azwu2nhsw001-westus2-dsk"
+    #     resource_group = "hsw"
+    #     zone = "2"
+    #     storage_account_type = "Premium_LRS"
+    #     disk_size_gb = "64"
+    #     tags = {
+    #         disk_label = "disk1"
+    #     }
+    # }
+}
+
+public_ips = {
+    bastion = {
+        resource_group = "hsw"
+        allocation_method = "Static"
+        sku = "Standard"
+    }
+    natgw = {
+        resource_group = "hsw"
+        allocation_method = "Static"
+        sku = "Standard"
+    }
+}
+
+bastion_host = {
+    bastion = {
+        resource_group = "hsw"
+        sku = "Standard"
+        ip_configuration = {
+            subnet = "hsw.bastion"
+            public_ip_address = "bastion"
         }
     }
 }
 
-# public_ips = {
-#     bastion = {
-#         resource_group = "internal"
-#         allocation_method = "Static"
-#         sku = "Standard"
-#     }
-# }
-
-# bastion_host = {
-#     bastion = {
-#         resource_group = "internal"
-#         sku = "Standard"
-#         ip_configuration = {
-#             subnet = "internal.bastion"
-#             public_ip_address = "bastion"
-#         }
-#     }
-# }
+nat_gateway = {
+    hsw = {
+        resource_group = "hsw"
+        public_ips = ["natgw"]
+    }
+}

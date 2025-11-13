@@ -251,12 +251,12 @@ storage_accounts = {
     }   
 }
 
-vmss = {
-    hsw = {
-        resource_group = "hsw"
-        zones = ["2"]
-    }
-}
+# vmss = {
+#     hsw = {
+#         resource_group = "hsw"
+#         zones = ["2"]
+#     }
+# }
 
 windows_vms = {
     hsw = {
@@ -267,7 +267,7 @@ windows_vms = {
         ] 
         size = "Standard_D2as_v5"
         license_type = "Windows_Server"
-        virtual_machine_scale_set = "hsw"
+        # virtual_machine_scale_set = "hsw"
         zone = "2"
         resource_group = "hsw"
         nics = {
@@ -333,11 +333,11 @@ linux_vms = {
 }
 
 public_ips = {
-    bastion = {
-        resource_group = "hsw"
-        allocation_method = "Static"
-        sku = "Standard"
-    }
+    # bastion = {
+    #     resource_group = "hsw"
+    #     allocation_method = "Static"
+    #     sku = "Standard"
+    # }
     natgw = {
         resource_group = "hsw"
         allocation_method = "Static"
@@ -345,16 +345,16 @@ public_ips = {
     }
 }
 
-bastion_host = {
-    bastion = {
-        resource_group = "hsw"
-        sku = "Standard"
-        ip_configuration = {
-            subnet = "hsw.bastion"
-            public_ip_address = "bastion"
-        }
-    }
-}
+# bastion_host = {
+#     bastion = {
+#         resource_group = "hsw"
+#         sku = "Standard"
+#         ip_configuration = {
+#             subnet = "hsw.bastion"
+#             public_ip_address = "bastion"
+#         }
+#     }
+# }
 
 nat_gateway = {
     hsw = {

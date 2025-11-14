@@ -13,9 +13,6 @@ sudo apt install build-essential python3-dev libkrb5-dev git gh python3-venv
 
 # Install VSCode
 ```
-wget "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64" -O vscode.deb
-sudo apt install ./vscode.deb
-
 curl -Lk 'https://code.visualstudio.com/sha/download?build=stable&os=cli-alpine-x64' --output vscode_cli.tar.gz
 tar -xf vscode_cli.tar.gz
 sudo cp code /usr/bin/

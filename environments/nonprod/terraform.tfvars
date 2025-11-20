@@ -265,7 +265,7 @@ windows_vms = {
             "azwu2nhsw001"
             # "azwu2nhsw002"
         ] 
-        size = "Standard_D2as_v5"
+        size = "Standard_D2as_v6"
         license_type = "Windows_Server"
         # virtual_machine_scale_set = "hsw"
         zone = "2"
@@ -285,6 +285,12 @@ windows_vms = {
         tags = {
             application = "hsw"
             backend_address_pool = "hsw"
+        }
+        source_image_reference = {
+            publisher = "MicrosoftWindowsServer"
+            offer     = "WindowsServer"
+            sku       = "2022-datacenter-g2"
+            version   = "latest"
         }
         # extension = {
         #     "enable-winrm2" = {

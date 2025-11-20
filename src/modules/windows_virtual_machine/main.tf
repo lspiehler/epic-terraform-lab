@@ -18,6 +18,7 @@ resource "azurerm_windows_virtual_machine" "windows_virtual_machine" {
   encryption_at_host_enabled = each.value.encryption_at_host_enabled  
   license_type               = each.value.license_type
   disk_controller_type      = each.value.disk_controller_type
+  secure_boot_enabled = each.value.secure_boot_enabled
 
   os_disk {
     name                 = each.value.os_disk.name

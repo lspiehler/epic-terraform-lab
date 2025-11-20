@@ -20,6 +20,7 @@ variable "windows_vms" {
         encryption_at_host_enabled=optional(bool, true)
         license_type = optional(string, null)
         disk_controller_type = optional(string, null)
+        secure_boot_enabled = optional(bool, true)
         disks = optional(map(object({
             caching = optional(string, "None")
             source_resource_id = optional(string)
@@ -94,6 +95,7 @@ variable "linux_vms" {
         disable_password_authentication = optional(bool, true)
         encryption_at_host_enabled=optional(bool, true) 
         admin_password_secret = optional(string, "default_password")
+        secure_boot_enabled = optional(bool, true)
         admin_ssh_key = optional(object({
             username = optional(string, "azureuser")
             //public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCrK38e+43RJJfHSKF8qljgKg/YklsKMMRocWE77Sr48nnyqAA85Al8eH0Yc7VOV0WfizCe8QyDh7skxNmlz6Yvotdri6YZZ8riDLT5MyDjITP818ylc1zkQqEQQ5OsjGUN8oNFpsMzY9YlZIgc4JpIOGlwkhqhtzjesyFjULAcVN+tQ5GeZfB8PGrnLmpjSjyDGp5Um8Ou80amyCtz8sApWg2/medJgJJ5umXco8A0wAM5CuQOxHfact/tr3WTCh+z95MRmPxk4B5t2y9M68XG1NhqPBno9vGWnX09DSkpBuZF/dTqHvSBgcC1qEjnoodPipUuEn3tm0tJaALaAv5R"

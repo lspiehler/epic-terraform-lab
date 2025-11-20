@@ -29,6 +29,7 @@ locals {
         encryption_at_host_enabled = vm.encryption_at_host_enabled
         admin_ssh_key = vm.admin_ssh_key
         disk_controller_type      = vm.disk_controller_type
+        secure_boot_enabled = vm.secure_boot_enabled
         
         os_disk = {
           name                 = vm.os_disk.name != null ? vm.os_disk.name : (length(vm.names) > 0 ? "${var.name_prefixes["disk"]}os-${var.name_prefixes["vm"]}${vm_index}${var.name_suffixes["disk"]}" : "${var.name_prefixes["disk"]}os-${var.name_prefixes["vm"]}${format("${vm_key}${vm.delimeter}${vm.index_format}", vm_index)}${var.name_suffixes["vm"]}${var.name_suffixes["disk"]}")

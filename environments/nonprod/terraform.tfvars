@@ -262,7 +262,7 @@ windows_vms = {
     hsw = {
         ##Hyperspace Web Servers##
         names = [
-            "azwu2nhsw001"
+            # "azwu2nhsw001",
             # "azwu2nhsw002"
         ] 
         size = "Standard_D2as_v6"
@@ -314,6 +314,7 @@ linux_vms = {
         admin_ssh_key = {
             public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCSRFZYxq5DuQrTGOPOyCyMvqC0bmMF13GUyy7+lfD21XOxcxSmKax8eX5Heuo301TCgDxM+DAG7sVFOhfrqGpsYI7LcFcVJwGZZPqsfM5TnVwxtDEbOGqNdOTtKnaoE7EuO59Ug7KptvZyMzhRiMLY6b96UOONQqNwvRYlohldZeCC2zeABqyRHSjHSITdT/7wWJJ7tASy8bS+ek5I8S72clcJ0xDliSwRvIs4TscaijnlkAvjvA1mYXm4psPKSCeeGkIdT2zo9DQbfyWgubylR49vWzqtDgvUANRWLvjZpdNk6fXIMDuGWF/G500EFquXUBOBXWY+qMVofRw+lzeN"
         }
+        secure_boot_enabled = false
         disable_password_authentication = false
         resource_group = "hsw"
         nics = {

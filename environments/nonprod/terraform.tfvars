@@ -306,7 +306,7 @@ windows_vms = {
 
 linux_vms = {
     ansible = {
-        size = "Standard_D2as_v5"
+        size = "Standard_D2as_v6"
         names = [
             "ansible01"
         ]

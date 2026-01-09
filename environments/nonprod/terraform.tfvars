@@ -151,7 +151,7 @@ rules = {
     }
     SSH_Inbound = {
         destination_port_ranges = ["22"]
-        source_address_prefixes = ["10.45.0.0/16", "10.40.39.0/24", "10.40.23.0/24", "10.40.40.0/24", "10.40.36.0/24", "10.40.20.0/24", "10.40.21.0/24", "10.41.20.0/24", "10.40.7.0/24", "199.204.56.21/32"]    
+        source_address_prefixes = ["10.45.0.0/16", "10.40.39.0/24", "10.40.23.0/24", "10.40.40.0/24", "10.40.36.0/24", "10.40.20.0/24", "10.40.21.0/24", "10.41.20.0/24", "10.40.7.0/24", "199.204.56.21/32","10.40.46.0/25"]    
         }
     RDP_Inbound = {
         destination_port_ranges = ["3389"]
@@ -194,7 +194,7 @@ rules = {
     }
     Kuiper_Inbound = {
         destination_port_ranges = ["135","5985-5986"]
-        source_address_prefixes = ["10.40.40.0/24","10.40.24.0/24","10.45.148.10/32","10.45.124.10/32","10.45.147.49/32","10.45.122.49/32"]
+        source_address_prefixes = ["10.40.40.0/24","10.40.24.0/24","10.45.148.10/32","10.45.124.10/32","10.45.147.49/32","10.45.122.49/32","10.40.46.0/25"]
     }
     ICA_Inbound = {
         destination_port_ranges = ["2598"]
@@ -293,7 +293,7 @@ windows_vms = {
     hsw = {
         ##Hyperspace Web Servers##
         names = [
-            # "azwu2nhsw001"
+            "azwu2nhsw001"
             # "azwu2nhsw002"
         ] 
         size = "Standard_D2as_v6"
@@ -327,7 +327,7 @@ windows_vms = {
             "enable-winrm2" = {
                 settings = <<SETTINGS
                 {
-                    "commandToExecute": "winrm quickconfig -quiet && netsh advfirewall firewall set rule group=\"Windows Remote Management\" new enable=Yes && netsh advfirewall firewall set rule name=\"Windows Remote Management (HTTP-In)\" profile=public new remoteip=localsubnet,10.40.44.0/24"
+                    "commandToExecute": "winrm quickconfig -quiet && netsh advfirewall firewall set rule group=\"Windows Remote Management\" new enable=Yes && netsh advfirewall firewall set rule name=\"Windows Remote Management (HTTP-In)\" profile=public new remoteip=localsubnet,10.40.46.0/25"
                 }
                 SETTINGS
             }
@@ -358,40 +358,40 @@ windows_vms = {
     }
 }
 
-linux_vms = {
-    ansible = {
-        size = "Standard_D2as_v5"
-        names = [
-            "ansible01"
-        ]
-        zone = 2
-        admin_ssh_key = {
-            public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCSRFZYxq5DuQrTGOPOyCyMvqC0bmMF13GUyy7+lfD21XOxcxSmKax8eX5Heuo301TCgDxM+DAG7sVFOhfrqGpsYI7LcFcVJwGZZPqsfM5TnVwxtDEbOGqNdOTtKnaoE7EuO59Ug7KptvZyMzhRiMLY6b96UOONQqNwvRYlohldZeCC2zeABqyRHSjHSITdT/7wWJJ7tASy8bS+ek5I8S72clcJ0xDliSwRvIs4TscaijnlkAvjvA1mYXm4psPKSCeeGkIdT2zo9DQbfyWgubylR49vWzqtDgvUANRWLvjZpdNk6fXIMDuGWF/G500EFquXUBOBXWY+qMVofRw+lzeN"
-        }
-        secure_boot_enabled = false
-        disable_password_authentication = false
-        resource_group = "hsw"
-        nics = {
-            primary = {
-                ip_configuration = [[{
-                    subnet = "hsw.hsw"
-                }]]
-            }
-        }
-        source_image_reference = {
-            publisher = "canonical"
-            offer = "ubuntu-24_04-lts"
-            sku = "server"
-            version = "latest"
-        }
-        boot_diagnostics = {
-            storage_account = "diag2lyas"
-        }
-        identity = {
-            type = "SystemAssigned"
-        }
-    }
-}
+# linux_vms = {
+#     ansible = {
+#         size = "Standard_D2as_v5"
+#         names = [
+#             "ansible01"
+#         ]
+#         zone = 2
+#         admin_ssh_key = {
+#             public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCSRFZYxq5DuQrTGOPOyCyMvqC0bmMF13GUyy7+lfD21XOxcxSmKax8eX5Heuo301TCgDxM+DAG7sVFOhfrqGpsYI7LcFcVJwGZZPqsfM5TnVwxtDEbOGqNdOTtKnaoE7EuO59Ug7KptvZyMzhRiMLY6b96UOONQqNwvRYlohldZeCC2zeABqyRHSjHSITdT/7wWJJ7tASy8bS+ek5I8S72clcJ0xDliSwRvIs4TscaijnlkAvjvA1mYXm4psPKSCeeGkIdT2zo9DQbfyWgubylR49vWzqtDgvUANRWLvjZpdNk6fXIMDuGWF/G500EFquXUBOBXWY+qMVofRw+lzeN"
+#         }
+#         secure_boot_enabled = false
+#         disable_password_authentication = false
+#         resource_group = "hsw"
+#         nics = {
+#             primary = {
+#                 ip_configuration = [[{
+#                     subnet = "hsw.hsw"
+#                 }]]
+#             }
+#         }
+#         source_image_reference = {
+#             publisher = "canonical"
+#             offer = "ubuntu-24_04-lts"
+#             sku = "server"
+#             version = "latest"
+#         }
+#         boot_diagnostics = {
+#             storage_account = "diag2lyas"
+#         }
+#         identity = {
+#             type = "SystemAssigned"
+#         }
+#     }
+# }
 
 public_ips = {
     # bastion = {
@@ -457,8 +457,6 @@ container_group = {
                 }
                 environment_variables = {
                     TUNNEL_NAME = "ansible-az-container"
-                    # FORCE_REBUILD = "2"
-                    # AUTHORIZED_KEYS = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDj2eA3pj6hGv12dPNQg6WWyYc1T75bRKLqowiaPWmoEW/AnYap7xONYp4rBymKVMETM81kKSUdr2ce4Brt4NiiHP2QtMN9dd83CCstGUflRZSgAwCPTpy5gP/a3RwID1U1rNYnP2EZwWA3p91K1gKR0YKHHx3FbdBQFzqXn7wfUicz5w5eWjtEOY+HZNPknPAm82Cpk8hHwO/zGcpDdkK29o0stjBL8R0r0uyTHchFchCeTYNeJDs+D9n9DRpqLE+ZmZPiQ62w7g21z3rlgX8U6vCZbrz67EFtYeWY0Dop+RIvQxBuI/pD5g43p1yy6bupbvS2Ctp52Fstpl2acToZ"
                 }
             }
         }

@@ -20,6 +20,8 @@ name_prefixes = {
     backup_pol = "prod-epicbh-"
     lb = "prod-"
     nat_gateway = "prod-"
+    user_assigned_identity = "prod-"
+    container_group = "prod-"
 }
 
 name_suffixes = {
@@ -44,6 +46,8 @@ name_suffixes = {
     backup_pol = "-westus2-backup"
     lb = "-westus2-lb"
     nat_gateway = "-westus2-natgw"
+    user_assigned_identity = "-westus2-uaid"
+    container_group = "-westus2-containergroup"
 }
 
 location = "westus2"
@@ -58,6 +62,10 @@ default_tags = {
 
 rgs = {
     hsw = {}
+    terraform = {
+        name = "RG-Terraform"
+        existing = true
+    }
 }
 
 nsgs = {
@@ -239,6 +247,18 @@ networks = {
                 network_security_group = "bastion"
                 address_prefixes = ["10.40.45.0/24"]
             }
+            container = {
+                network_security_group = "hsw"
+                address_prefixes = ["10.40.46.0/25"]
+                nat_gateway = "hsw"
+                delegation = {
+                    name = "Microsoft.ContainerInstance/containerGroups"
+                    service_delegation = {
+                        name = "Microsoft.ContainerInstance/containerGroups"
+                        actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+                    }
+                }
+            }
         }
     }
 }
@@ -248,7 +268,18 @@ storage_accounts = {
         resource_group = "hsw"
         public_network_access_enabled = true
         shared_access_key_enabled = false
-    }   
+    }
+    terraform = {
+        name = "saterraformlyas"
+        resource_group = "terraform"
+        existing = true
+        shares = {
+            ansible = {
+                name = "ansible-persistence"
+                existing = true
+            }
+        }
+    }
 }
 
 # vmss = {
@@ -390,5 +421,50 @@ nat_gateway = {
     hsw = {
         resource_group = "hsw"
         public_ips = ["natgw"]
+    }
+}
+
+user_assigned_identity = {
+    ansible_container = {
+        name = "ansible_container"
+        existing = true
+        resource_group = "terraform"
+    }
+}
+
+container_group = {
+    ansible = {
+        resource_group = "hsw"
+        ip_address_type = "Private"
+        subnets = ["hsw.container"]
+        container = {
+            ansible = {
+                image = "ghcr.io/sapphire-health/ansible-epic:azure"
+                cpu = 2
+                memory = 4
+                ports = [
+                    {
+                        port = 22
+                        protocol = "TCP"
+                    }
+                ]
+                volume = {
+                    ansible-persist = {
+                        mount_path = "/home/ansible/source"
+                        storage_account = "terraform"
+                        share = "ansible"
+                    }
+                }
+                environment_variables = {
+                    TUNNEL_NAME = "ansible-az-container"
+                    # FORCE_REBUILD = "2"
+                    # AUTHORIZED_KEYS = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDj2eA3pj6hGv12dPNQg6WWyYc1T75bRKLqowiaPWmoEW/AnYap7xONYp4rBymKVMETM81kKSUdr2ce4Brt4NiiHP2QtMN9dd83CCstGUflRZSgAwCPTpy5gP/a3RwID1U1rNYnP2EZwWA3p91K1gKR0YKHHx3FbdBQFzqXn7wfUicz5w5eWjtEOY+HZNPknPAm82Cpk8hHwO/zGcpDdkK29o0stjBL8R0r0uyTHchFchCeTYNeJDs+D9n9DRpqLE+ZmZPiQ62w7g21z3rlgX8U6vCZbrz67EFtYeWY0Dop+RIvQxBuI/pD5g43p1yy6bupbvS2Ctp52Fstpl2acToZ"
+                }
+            }
+        }
+        identity = {
+            type = "UserAssigned"
+            user_assigned_identities = ["ansible_container"]
+        }
     }
 }

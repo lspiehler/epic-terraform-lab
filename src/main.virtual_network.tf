@@ -50,12 +50,23 @@ module "network_security_group_association" {
   mod_network_security_rule = module.network_security_rule.network_security_rule
 }
 
+module "network_interface_application_security_group_association" {
+  source = "./modules/network_interface_application_security_group_association"
+  vms = {
+    windows = var.windows_vms
+    linux = var.linux_vms
+  }
+  mod_nic = module.network_interface.network_interface
+  mod_application_security_group = module.application_security_group.application_security_group
+}
+
 ##Create the rules for each NSG. Each NSG has rules defined by the rules attribute within the variable NSGs
 ##Rules are set by the name with destination port and source address defined via the rules variable
 module "network_security_rule" {
   source = "./modules/network_security_rule"
   rules = var.rules
   resource_group = module.resource_group.resource_group
+  mod_application_security_group = module.application_security_group.application_security_group
   nsg_vars = var.nsgs
   nsg = module.network_security_group.network_security_group
 }

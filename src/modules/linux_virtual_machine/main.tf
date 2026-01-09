@@ -17,8 +17,8 @@ resource "azurerm_linux_virtual_machine" "linux_virtual_machine" {
   network_interface_ids     = each.value.network_interface_ids
   encryption_at_host_enabled = each.value.encryption_at_host_enabled  
   disk_controller_type      = each.value.disk_controller_type
-  secure_boot_enabled = each.value.secure_boot_enabled
-  
+  secure_boot_enabled       = each.value.secure_boot_enabled
+
   dynamic "admin_ssh_key" {
     for_each = each.value.admin_ssh_key == null ? [] : [1]
     content {

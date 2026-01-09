@@ -262,7 +262,7 @@ windows_vms = {
     hsw = {
         ##Hyperspace Web Servers##
         names = [
-            # "azwu2nhsw001",
+            # "azwu2nhsw001"
             # "azwu2nhsw002"
         ] 
         size = "Standard_D2as_v6"
@@ -292,21 +292,44 @@ windows_vms = {
             sku       = "2022-datacenter-g2"
             version   = "latest"
         }
-        # extension = {
-        #     "enable-winrm2" = {
-        #         settings = <<SETTINGS
-        #         {
-        #             "commandToExecute": "winrm quickconfig -quiet && netsh advfirewall firewall set rule group=\"Windows Remote Management\" new enable=Yes && netsh advfirewall firewall set rule name=\"Windows Remote Management (HTTP-In)\" profile=public new remoteip=localsubnet,10.40.40.0/24"
-        #         }
-        #         SETTINGS
-        #     }
-        # }
+        extension = {
+            "enable-winrm2" = {
+                settings = <<SETTINGS
+                {
+                    "commandToExecute": "winrm quickconfig -quiet && netsh advfirewall firewall set rule group=\"Windows Remote Management\" new enable=Yes && netsh advfirewall firewall set rule name=\"Windows Remote Management (HTTP-In)\" profile=public new remoteip=localsubnet,10.40.44.0/24"
+                }
+                SETTINGS
+            }
+        }
+        disks = {
+            db = {
+                lun = "0"
+                storage_account_type = "Premium_LRS"
+                disk_size_gb = "10"
+            }
+            log = {
+                lun = "1"
+                storage_account_type = "Premium_LRS"
+                disk_size_gb = "10"
+                force_detach = true
+            }
+            temp = {
+                lun = "2"
+                storage_account_type = "Premium_LRS"
+                disk_size_gb = "25"
+            }
+            data = {
+                lun = "3"
+                storage_account_type = "Premium_LRS"
+                disk_size_gb = "10"
+            }
+        }
     }
 }
 
 linux_vms = {
     ansible = {
-        size = "Standard_D2as_v6"
+        size = "Standard_D2as_v5"
         names = [
             "ansible01"
         ]

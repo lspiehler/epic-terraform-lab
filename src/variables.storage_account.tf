@@ -39,6 +39,7 @@ variable "storage_accounts" {
             access_tier = optional(string)
             enabled_protocol = optional(string)
             quota = optional(string, "10")
+            existing = optional(bool, false)
         })),{})
         sas_policy = optional(object({
             expiration_period = optional(string, "02.00:00:00")

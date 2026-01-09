@@ -39,6 +39,7 @@ variable "windows_vms" {
         })),{})
         nics = optional(map(object({
             accelerated_networking_enabled = optional(bool, true)
+            application_security_groups = optional(list(string), [])
             ip_forwarding_enabled = optional(bool, false)
             ip_configuration = list(list(object({
                 subnet = string
@@ -69,7 +70,7 @@ variable "windows_vms" {
         source_image_reference = optional(object({
             publisher = optional(string, "MicrosoftWindowsServer")
             offer = optional(string, "WindowsServer")
-            sku = optional(string, "2022-Datacenter")
+            sku = optional(string, "2022-datacenter-g2")
             version = optional(string, "latest")
         }),{})
         boot_diagnostics = optional(object({
@@ -106,6 +107,7 @@ variable "linux_vms" {
         backuppolicy = optional(string, null)        
         nics = optional(map(object({
             accelerated_networking_enabled = optional(bool, true)
+            application_security_groups = optional(list(string), [])
             ip_forwarding_enabled = optional(bool, false)
             ip_configuration = list(list(object({
                 subnet = string

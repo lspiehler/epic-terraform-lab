@@ -10,6 +10,7 @@ locals {
         service_endpoints = subnet.service_endpoints
         default_outbound_access_enabled = subnet.default_outbound_access_enabled
         private_endpoint_network_policies = subnet.private_endpoint_network_policies
+        delegation = subnet.delegation
         existing = subnet.existing
       }
     ]

@@ -166,4 +166,10 @@ resource "azurerm_application_gateway" "application_gateway" {
   }
 
   tags = merge(var.var_default_tags, each.value.tags)
+
+  lifecycle {
+    ignore_changes = [
+      ssl_certificate, identity, global
+    ]
+  }
 }

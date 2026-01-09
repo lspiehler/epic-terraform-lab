@@ -29,6 +29,13 @@ variable "networks" {
             default_outbound_access_enabled = optional(bool, false)
             nat_gateway = optional(string)
             private_endpoint_network_policies = optional(string, "Disabled")
+            delegation = optional(object({
+                name = string
+                service_delegation = object({
+                    name = string
+                    actions = list(string)
+                })
+            }))
         }))
     }))
     description = "Network variables"
@@ -44,9 +51,11 @@ variable "rules" {
         source_port_range = optional(string, "*")
         destination_port_range = optional(string, null)
         destination_port_ranges = optional(list(string), null)
-        source_address_prefix = optional(string, "*")
+        source_address_prefix = optional(string, null)
         source_address_prefixes = optional(list(string), null)
         destination_address_prefix = optional(string, "*")
+        source_application_security_groups = optional(list(string), null)
+        destination_application_security_groups = optional(list(string), null)
     }))
     default = {}
 }

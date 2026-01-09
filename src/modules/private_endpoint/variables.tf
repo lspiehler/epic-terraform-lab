@@ -1,28 +1,36 @@
-variable "private_endpoints" {
+variable "var_private_endpoints" {
     type = any
 }
 
-variable "resource_group" {
+variable "mod_resource_group" {
     type = any
 }
 
-variable "subnet" {
+variable "mod_subnet" {
     type = any
 }
 
-variable "storage_account" {
+variable "mod_storage_account" {
     type = any
 }
 
-variable "name_prefixes" {
+variable "mod_automation_account" {
+    type = any
+}
+
+variable "mod_private_dns_zone" {
+    type = any
+}
+
+variable "var_name_prefixes" {
     type = map
 }
 
-variable "name_suffixes" {
+variable "var_name_suffixes" {
     type = map
 }
 
-variable "location" {
+variable "var_location" {
     type = string
 }
 

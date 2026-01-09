@@ -8,6 +8,7 @@ locals {
         access_tier = share.access_tier
         enabled_protocol = share.enabled_protocol
         quota = share.quota
+        existing = share.existing
       }
     ]
   ])

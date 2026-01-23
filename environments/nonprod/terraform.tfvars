@@ -358,7 +358,55 @@ windows_vms = {
     }
 }
 
-# linux_vms = {
+linux_vms = {
+    ODBTST = {
+        size = "Standard_D2as_v6"
+        names = [
+            "ODBTST"
+        ]
+        zone = 2
+        admin_ssh_key = {
+            public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCSRFZYxq5DuQrTGOPOyCyMvqC0bmMF13GUyy7+lfD21XOxcxSmKax8eX5Heuo301TCgDxM+DAG7sVFOhfrqGpsYI7LcFcVJwGZZPqsfM5TnVwxtDEbOGqNdOTtKnaoE7EuO59Ug7KptvZyMzhRiMLY6b96UOONQqNwvRYlohldZeCC2zeABqyRHSjHSITdT/7wWJJ7tASy8bS+ek5I8S72clcJ0xDliSwRvIs4TscaijnlkAvjvA1mYXm4psPKSCeeGkIdT2zo9DQbfyWgubylR49vWzqtDgvUANRWLvjZpdNk6fXIMDuGWF/G500EFquXUBOBXWY+qMVofRw+lzeN"
+        }
+        secure_boot_enabled = false
+        disable_password_authentication = false
+        resource_group = "hsw"
+        nics = {
+            primary = {
+                ip_configuration = [[{
+                    subnet = "hsw.hsw"
+                }]]
+            }
+        }
+        boot_diagnostics = {
+            storage_account = "diag2lyas"
+        }
+        identity = {
+            type = "SystemAssigned"
+        }
+        disks = {
+            EpicInstance = {
+                lun = "0"
+                storage_account_type = "Standard_LRS"
+                disk_size_gb = "64"
+            }
+            EpicData1 = {
+                lun = "1"
+                storage_account_type = "Standard_LRS"
+                disk_size_gb = "64"
+            }
+            EpicData2 = {
+                lun = "2"
+                storage_account_type = "Standard_LRS"
+                disk_size_gb = "64"
+            }
+            EpicJrn = {
+                lun = "3"
+                storage_account_type = "Standard_LRS"
+                disk_size_gb = "64"
+            }
+        }
+    }
 #     ansible = {
 #         size = "Standard_D2as_v5"
 #         names = [
@@ -391,14 +439,14 @@ windows_vms = {
 #             type = "SystemAssigned"
 #         }
 #     }
-# }
+}
 
 public_ips = {
-    # bastion = {
-    #     resource_group = "hsw"
-    #     allocation_method = "Static"
-    #     sku = "Standard"
-    # }
+    bastion = {
+        resource_group = "hsw"
+        allocation_method = "Static"
+        sku = "Standard"
+    }
     natgw = {
         resource_group = "hsw"
         allocation_method = "Static"
@@ -406,16 +454,16 @@ public_ips = {
     }
 }
 
-# bastion_host = {
-#     bastion = {
-#         resource_group = "hsw"
-#         sku = "Standard"
-#         ip_configuration = {
-#             subnet = "hsw.bastion"
-#             public_ip_address = "bastion"
-#         }
-#     }
-# }
+bastion_host = {
+    bastion = {
+        resource_group = "hsw"
+        sku = "Standard"
+        ip_configuration = {
+            subnet = "hsw.bastion"
+            public_ip_address = "bastion"
+        }
+    }
+}
 
 nat_gateway = {
     hsw = {

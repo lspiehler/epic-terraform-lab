@@ -20,6 +20,8 @@ name_prefixes = {
     backup_pol = "prod-epicbh-"
     lb = "prod-"
     nat_gateway = "prod-"
+    user_assigned_identity = "prod-"
+    container_group = "prod-"
 }
 
 name_suffixes = {
@@ -44,6 +46,8 @@ name_suffixes = {
     backup_pol = "-westus2-backup"
     lb = "-westus2-lb"
     nat_gateway = "-westus2-natgw"
+    user_assigned_identity = "-westus2-uaid"
+    container_group = "-westus2-containergroup"
 }
 
 location = "westus2"
@@ -58,6 +62,10 @@ default_tags = {
 
 rgs = {
     hsw = {}
+    terraform = {
+        name = "RG-Terraform"
+        existing = true
+    }
 }
 
 nsgs = {
@@ -143,7 +151,7 @@ rules = {
     }
     SSH_Inbound = {
         destination_port_ranges = ["22"]
-        source_address_prefixes = ["10.45.0.0/16", "10.40.39.0/24", "10.40.23.0/24", "10.40.40.0/24", "10.40.36.0/24", "10.40.20.0/24", "10.40.21.0/24", "10.41.20.0/24", "10.40.7.0/24", "199.204.56.21/32"]    
+        source_address_prefixes = ["10.45.0.0/16", "10.40.39.0/24", "10.40.23.0/24", "10.40.40.0/24", "10.40.36.0/24", "10.40.20.0/24", "10.40.21.0/24", "10.41.20.0/24", "10.40.7.0/24", "199.204.56.21/32","10.40.46.0/25"]    
         }
     RDP_Inbound = {
         destination_port_ranges = ["3389"]
@@ -186,7 +194,7 @@ rules = {
     }
     Kuiper_Inbound = {
         destination_port_ranges = ["135","5985-5986"]
-        source_address_prefixes = ["10.40.40.0/24","10.40.24.0/24","10.45.148.10/32","10.45.124.10/32","10.45.147.49/32","10.45.122.49/32"]
+        source_address_prefixes = ["10.40.40.0/24","10.40.24.0/24","10.45.148.10/32","10.45.124.10/32","10.45.147.49/32","10.45.122.49/32","10.40.46.0/25"]
     }
     ICA_Inbound = {
         destination_port_ranges = ["2598"]
@@ -239,6 +247,18 @@ networks = {
                 network_security_group = "bastion"
                 address_prefixes = ["10.40.45.0/24"]
             }
+            container = {
+                network_security_group = "hsw"
+                address_prefixes = ["10.40.46.0/25"]
+                nat_gateway = "hsw"
+                delegation = {
+                    name = "Microsoft.ContainerInstance/containerGroups"
+                    service_delegation = {
+                        name = "Microsoft.ContainerInstance/containerGroups"
+                        actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+                    }
+                }
+            }
         }
     }
 }
@@ -248,7 +268,18 @@ storage_accounts = {
         resource_group = "hsw"
         public_network_access_enabled = true
         shared_access_key_enabled = false
-    }   
+    }
+    terraform = {
+        name = "saterraformlyas"
+        resource_group = "terraform"
+        existing = true
+        shares = {
+            ansible = {
+                name = "ansible-persistence"
+                existing = true
+            }
+        }
+    }
 }
 
 # vmss = {
@@ -262,7 +293,7 @@ windows_vms = {
     hsw = {
         ##Hyperspace Web Servers##
         names = [
-            # "azwu2nhsw001"
+            "azwu2nhsw001"
             # "azwu2nhsw002"
         ] 
         size = "Standard_D2as_v6"
@@ -296,7 +327,7 @@ windows_vms = {
             "enable-winrm2" = {
                 settings = <<SETTINGS
                 {
-                    "commandToExecute": "winrm quickconfig -quiet && netsh advfirewall firewall set rule group=\"Windows Remote Management\" new enable=Yes && netsh advfirewall firewall set rule name=\"Windows Remote Management (HTTP-In)\" profile=public new remoteip=localsubnet,10.40.44.0/24"
+                    "commandToExecute": "winrm quickconfig -quiet && netsh advfirewall firewall set rule group=\"Windows Remote Management\" new enable=Yes && netsh advfirewall firewall set rule name=\"Windows Remote Management (HTTP-In)\" profile=public new remoteip=localsubnet,10.40.46.0/25"
                 }
                 SETTINGS
             }
@@ -328,10 +359,10 @@ windows_vms = {
 }
 
 linux_vms = {
-    ansible = {
-        size = "Standard_D2as_v5"
+    ODBTST = {
+        size = "Standard_D2as_v6"
         names = [
-            "ansible01"
+            "ODBTST"
         ]
         zone = 2
         admin_ssh_key = {
@@ -347,27 +378,75 @@ linux_vms = {
                 }]]
             }
         }
-        source_image_reference = {
-            publisher = "canonical"
-            offer = "ubuntu-24_04-lts"
-            sku = "server"
-            version = "latest"
-        }
         boot_diagnostics = {
             storage_account = "diag2lyas"
         }
         identity = {
             type = "SystemAssigned"
         }
+        disks = {
+            EpicInstance = {
+                lun = "0"
+                storage_account_type = "Standard_LRS"
+                disk_size_gb = "64"
+            }
+            EpicData1 = {
+                lun = "1"
+                storage_account_type = "Standard_LRS"
+                disk_size_gb = "64"
+            }
+            EpicData2 = {
+                lun = "2"
+                storage_account_type = "Standard_LRS"
+                disk_size_gb = "64"
+            }
+            EpicJrn = {
+                lun = "3"
+                storage_account_type = "Standard_LRS"
+                disk_size_gb = "64"
+            }
+        }
     }
+#     ansible = {
+#         size = "Standard_D2as_v5"
+#         names = [
+#             "ansible01"
+#         ]
+#         zone = 2
+#         admin_ssh_key = {
+#             public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCSRFZYxq5DuQrTGOPOyCyMvqC0bmMF13GUyy7+lfD21XOxcxSmKax8eX5Heuo301TCgDxM+DAG7sVFOhfrqGpsYI7LcFcVJwGZZPqsfM5TnVwxtDEbOGqNdOTtKnaoE7EuO59Ug7KptvZyMzhRiMLY6b96UOONQqNwvRYlohldZeCC2zeABqyRHSjHSITdT/7wWJJ7tASy8bS+ek5I8S72clcJ0xDliSwRvIs4TscaijnlkAvjvA1mYXm4psPKSCeeGkIdT2zo9DQbfyWgubylR49vWzqtDgvUANRWLvjZpdNk6fXIMDuGWF/G500EFquXUBOBXWY+qMVofRw+lzeN"
+#         }
+#         secure_boot_enabled = false
+#         disable_password_authentication = false
+#         resource_group = "hsw"
+#         nics = {
+#             primary = {
+#                 ip_configuration = [[{
+#                     subnet = "hsw.hsw"
+#                 }]]
+#             }
+#         }
+#         source_image_reference = {
+#             publisher = "canonical"
+#             offer = "ubuntu-24_04-lts"
+#             sku = "server"
+#             version = "latest"
+#         }
+#         boot_diagnostics = {
+#             storage_account = "diag2lyas"
+#         }
+#         identity = {
+#             type = "SystemAssigned"
+#         }
+#     }
 }
 
 public_ips = {
-    # bastion = {
-    #     resource_group = "hsw"
-    #     allocation_method = "Static"
-    #     sku = "Standard"
-    # }
+    bastion = {
+        resource_group = "hsw"
+        allocation_method = "Static"
+        sku = "Standard"
+    }
     natgw = {
         resource_group = "hsw"
         allocation_method = "Static"
@@ -375,20 +454,63 @@ public_ips = {
     }
 }
 
-# bastion_host = {
-#     bastion = {
-#         resource_group = "hsw"
-#         sku = "Standard"
-#         ip_configuration = {
-#             subnet = "hsw.bastion"
-#             public_ip_address = "bastion"
-#         }
-#     }
-# }
+bastion_host = {
+    bastion = {
+        resource_group = "hsw"
+        sku = "Standard"
+        ip_configuration = {
+            subnet = "hsw.bastion"
+            public_ip_address = "bastion"
+        }
+    }
+}
 
 nat_gateway = {
     hsw = {
         resource_group = "hsw"
         public_ips = ["natgw"]
+    }
+}
+
+user_assigned_identity = {
+    ansible_container = {
+        name = "ansible_container"
+        existing = true
+        resource_group = "terraform"
+    }
+}
+
+container_group = {
+    ansible = {
+        resource_group = "hsw"
+        ip_address_type = "Private"
+        subnets = ["hsw.container"]
+        container = {
+            ansible = {
+                image = "ghcr.io/sapphire-health/ansible-epic:azure"
+                cpu = 2
+                memory = 4
+                ports = [
+                    {
+                        port = 22
+                        protocol = "TCP"
+                    }
+                ]
+                volume = {
+                    ansible-persist = {
+                        mount_path = "/home/ansible/source"
+                        storage_account = "terraform"
+                        share = "ansible"
+                    }
+                }
+                environment_variables = {
+                    TUNNEL_NAME = "ansible-az-container"
+                }
+            }
+        }
+        identity = {
+            type = "UserAssigned"
+            user_assigned_identities = ["ansible_container"]
+        }
     }
 }

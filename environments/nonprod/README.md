@@ -12,3 +12,11 @@ terraform -chdir=src apply -var-file="../environments/nonprod/terraform.tfvars"
 
 # destroy
 terraform -chdir=src destroy -var-file="../environments/nonprod/terraform.tfvars"
+
+# Use az cli to connect to the container and test ansible
+az container exec --resource-group prod-hsw-westus2-rg --name prod-ansible-westus2-containergroup --exec-command "/bin/bash"
+cd ~/source/epic-ansible-lab
+. .env
+source ~/venv/azure/bin/activate
+ansible -i inventory.azure_rm.yml -m ansible.windows.win_ping azwu2nhsw001
+ansible -i inventory.azure_rm.yml -m ansible.builtin.ping ODBTST
